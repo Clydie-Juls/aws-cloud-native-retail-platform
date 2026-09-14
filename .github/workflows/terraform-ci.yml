@@ -1,0 +1,67 @@
+name: Terraform CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.16.0
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        env:
+          TF_VAR_db_password: "ci-placeholder-password"
+        run: |
+          terraform plan \
+            -input=false \
+            -lock=false \
+            -out=tfplan
+
+          terraform show -no-color tfplan > plan.txt
+
+      - name: Check plan for known invalid configuration
+        run: |
+          set -e
+
+          if grep -q 'NET_BIND_SERVICE' plan.txt; then
+            echo "ERROR: NET_BIND_SERVICE found in Terraform plan"
+            exit 1
+          fi
+
+          if grep -q '"interval": 1' plan.txt; then
+            echo "ERROR: invalid ECS health check interval found"
+            exit 1
+          fi
+
+          if grep -q 'orders-service-storage' plan.txt; then
+            echo "ERROR: stale volume name found"
+            exit 1
+          fi
+
+          echo "Plan checks passed"
