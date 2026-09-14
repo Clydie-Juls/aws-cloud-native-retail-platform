@@ -41,7 +41,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-            role-to-assume: arn:aws:iam::797886334120:role/github-actions-terraform-plan
+            role-to-assume: arn:aws:iam::797886334120:oidc-provider/token.actions.githubusercontent.com
             aws-region: us-east-1  
 
       - name: Terraform plan
