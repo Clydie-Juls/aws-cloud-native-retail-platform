@@ -120,8 +120,8 @@ resource "aws_ecs_task_definition" "cart-ecs-td" {
 
   cpu    = "512"
   memory = "1024"
-  
-  
+
+
 
   volume {
     name = "cart-service-storage"
