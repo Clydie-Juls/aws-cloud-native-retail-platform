@@ -64,6 +64,25 @@ flowchart TB
     EFS -. persistent storage .-> Private
 ```
 
+## Deployment Metrics
+
+The current AWS deployment provisions a multi-service environment across three Availability Zones using Terraform.
+
+| Metric | Current Deployment |
+|---|---:|
+| AWS Availability Zones | 3 |
+| ECS application services | 5 |
+| Supporting data / messaging containers | 5 |
+| Private backend services | 4 |
+| Public application entry points | 1 ALB |
+| Full infrastructure provisioning time | ~5 minutes |
+| Infrastructure definition | Terraform |
+| Internal service communication | AWS Service Connect |
+
+A complete environment can be recreated from Terraform in approximately **5 minutes**, including VPC networking, public/private subnets, ECS Fargate services, load balancing, service discovery, security groups, EFS, and supporting container dependencies.
+
+> Provisioning time is based on observed end-to-end `terraform apply` runs and is intended as an approximate deployment metric rather than a performance benchmark.
+
 ### Request flow
 
 ```text
