@@ -1,0 +1,58 @@
+[
+  {
+    "name": "catalog",
+    "image": "public.ecr.aws/aws-containers/retail-store-sample-catalog:1.3.0",
+    "essential": true,
+
+    "portMappings": [
+      {
+        "name": "catalog",
+        "containerPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+
+    "environment": [
+      {
+        "name": "GIN_MODE",
+        "value": "release"
+      },
+      {
+        "name": "reschedule",
+        "value": "on-node-failure"
+      },
+      {
+        "name": "RETAIL_CATALOG_PERSISTENCE_PROVIDER",
+        "value": "mysql"
+      },
+      {
+        "name": "RETAIL_CATALOG_PERSISTENCE_PASSWORD",
+        "value": "${db_password}"
+      },
+      {
+        "name": "RETAIL_CATALOG_PERSISTENCE_ENDPOINT",
+        "value": "localhost:3306"
+      }
+    ],
+
+    "dependsOn": [
+      {
+        "containerName": "catalog-db",
+        "condition": "HEALTHY"
+      }
+    ],
+
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -f http://localhost:8080/health || exit 1"
+      ],
+      "interval": 10,
+      "timeout": 10,
+      "retries": 3
+    },
+
+    "readonlyRootFilesystem": true
+
+  }
+]

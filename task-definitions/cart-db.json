@@ -1,0 +1,45 @@
+[{
+    "name": "cart-db",
+    "image": "amazon/dynamodb-local:1.20.0",
+    "essential": true, 
+    "portMappings": [
+        {
+            "containerPort": 8000,
+            "protocol": "tcp"
+        }
+    ],
+
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "exit 0"
+      ],
+      "interval": 5,
+      "timeout": 15,
+      "retries": 3
+    },
+
+    "readonlyRootFilesystem": true,
+
+    "linuxParameters": {
+      "tmpfs": [
+        {
+          "containerPath": "/tmp",
+          "size": 64,
+          "mountOptions": [
+            "rw",
+            "noexec",
+            "nosuid"
+          ]
+        }
+      ]
+    },
+
+    "mountPoints": [
+  {
+    "sourceVolume": "cart-service-storage",
+    "containerPath": "/home/dynamodblocal/data",
+    "readOnly": false
+  }
+]
+}]

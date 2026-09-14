@@ -1,0 +1,33 @@
+[
+  {
+    "name": "checkout-redis",
+    "image": "redis:6.0-alpine",
+    "essential": true,
+
+    "portMappings": [
+      {
+        "containerPort": 6379,
+        "protocol": "tcp"
+      }
+    ],
+
+    "healthCheck": {
+      "command": [
+        "CMD",
+        "redis-cli",
+        "ping"
+      ],
+      "interval": 5,
+      "timeout": 3,
+      "retries": 10
+    },
+
+    "mountPoints": [
+  {
+    "sourceVolume": "checkout-service-storage",
+    "containerPath": "/data",
+    "readOnly": false
+  }
+]
+  }
+]

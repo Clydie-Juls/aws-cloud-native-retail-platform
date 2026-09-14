@@ -1,0 +1,44 @@
+[
+  {
+    "name": "rabbitmq",
+    "image": "rabbitmq:3-management",
+    "essential": true,
+
+    "portMappings": [
+      {
+        "containerPort": 5672,
+        "protocol": "tcp"
+      }
+    ],
+
+    "environment": [
+      {
+        "name": "RABBITMQ_DEFAULT_USER",
+        "value": "rabbitmq"
+      },
+      {
+        "name": "RABBITMQ_DEFAULT_PASS",
+        "value": "${db_password}"
+      }
+    ],
+
+    "mountPoints": [
+  {
+    "sourceVolume": "order-service-storage",
+    "containerPath": "/var/lib/rabbitmq",
+    "readOnly": false
+  }
+],
+
+"healthCheck": {
+  "command": [
+    "CMD-SHELL",
+    "rabbitmq-diagnostics -q ping || exit 1"
+  ],
+  "interval": 10,
+  "timeout": 5,
+  "retries": 10,
+  "startPeriod": 20
+}
+  }
+]

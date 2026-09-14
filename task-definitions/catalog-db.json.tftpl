@@ -1,0 +1,65 @@
+[
+  {
+    "name": "catalog-db",
+    "image": "mariadb:10.9",
+    "essential": true,
+
+    "portMappings": [
+      {
+        "containerPort": 3306,
+        "protocol": "tcp"
+      }
+    ],
+
+    "environment": [
+      {
+        "name": "reschedule",
+        "value": "on-node-failure"
+      },
+      {
+        "name": "MYSQL_ROOT_PASSWORD",
+        "value": "${db_password}"
+      },
+      {
+        "name": "MYSQL_ALLOW_EMPTY_PASSWORD",
+        "value": "true"
+      },
+      {
+        "name": "MYSQL_DATABASE",
+        "value": "catalogdb"
+      },
+      {
+        "name": "MYSQL_USER",
+        "value": "catalog_user"
+      },
+      {
+        "name": "MYSQL_PASSWORD",
+        "value": "${db_password}"
+      }
+    ],
+
+    "healthCheck": {
+      "command": [
+        "CMD",
+        "mysqladmin",
+        "ping",
+        "-h",
+        "localhost",
+        "-u",
+        "catalog_user",
+        "-p${db_password}"
+      ],
+      "interval": 10,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 30
+    },
+    "mountPoints": [
+  {
+    "sourceVolume": "catalog-service-storage",
+    "containerPath": "/var/lib/mysql",
+    "readOnly": false
+  }
+]
+  }
+]

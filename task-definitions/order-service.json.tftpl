@@ -1,0 +1,84 @@
+[
+  {
+    "name": "orders",
+    "image": "public.ecr.aws/aws-containers/retail-store-sample-orders:1.3.0",
+    "essential": true,
+
+    "portMappings": [
+      {
+        "name": "orders",
+        "containerPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+
+    "environment": [
+      {
+        "name": "reschedule",
+        "value": "on-node-failure"
+      },
+      {
+        "name": "SERVER_TOMCAT_ACCESSLOG_ENABLED",
+        "value": "true"
+      },
+      {
+        "name": "RETAIL_ORDERS_PERSISTENCE_PROVIDER",
+        "value": "postgres"
+      },
+      {
+        "name": "RETAIL_ORDERS_PERSISTENCE_ENDPOINT",
+        "value": "localhost:5432"
+      },
+      {
+        "name": "RETAIL_ORDERS_PERSISTENCE_NAME",
+        "value": "orders"
+      },
+      {
+        "name": "RETAIL_ORDERS_PERSISTENCE_USERNAME",
+        "value": "orders_user"
+      },
+      {
+        "name": "RETAIL_ORDERS_PERSISTENCE_PASSWORD",
+        "value": "${db_password}"
+      },
+      {
+        "name": "RETAIL_ORDERS_MESSAGING_PROVIDER",
+        "value": "rabbitmq"
+      },
+      {
+        "name": "RETAIL_ORDERS_MESSAGING_RABBITMQ_ADDRESSES",
+        "value": "localhost:5672"
+      },
+      {
+        "name": "RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME",
+        "value": "rabbitmq"
+      },
+      {
+        "name": "RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD",
+        "value": "${db_password}"
+      }
+    ],
+
+    "dependsOn": [
+  {
+    "containerName": "orders-db",
+    "condition": "HEALTHY"
+  },
+  {
+    "containerName": "rabbitmq",
+    "condition": "HEALTHY"
+  }
+],
+
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -f http://localhost:8080/actuator/health || exit 1"
+      ],
+      "interval": 10,
+      "timeout": 10,
+      "retries": 3,
+      "startPeriod": 15
+    }
+  }
+]

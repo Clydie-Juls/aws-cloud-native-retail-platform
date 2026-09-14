@@ -1,0 +1,43 @@
+[
+  {
+    "name": "orders-db",
+    "image": "postgres:16.1",
+    "essential": true,
+
+    "portMappings": [
+      {
+        "containerPort": 5432,
+        "protocol": "tcp"
+      }
+    ],
+
+    "environment": [
+      {
+        "name": "reschedule",
+        "value": "on-node-failure"
+      },
+      {
+        "name": "POSTGRES_PASSWORD",
+        "value": "${db_password}"
+      },
+      {
+        "name": "POSTGRES_DB",
+        "value": "orders"
+      },
+      {
+        "name": "POSTGRES_USER",
+        "value": "orders_user"
+      }
+    ],
+
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "pg_isready -d orders -U orders_user"
+      ],
+      "interval": 10,
+      "timeout": 5,
+      "retries": 10
+    }
+  }
+]
