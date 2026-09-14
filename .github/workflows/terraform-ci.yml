@@ -38,18 +38,6 @@ jobs:
       - name: Terraform validate
         run: terraform validate
 
-      - name: Inspect GitHub OIDC subject
-        uses: actions/github-script@v7
-        with:
-            script: |
-                const token = await core.getIDToken('sts.amazonaws.com')
-                const payload = JSON.parse(
-                    Buffer.from(token.split('.')[1], 'base64url').toString()
-                )
-
-                core.info(`aud: ${payload.aud}`)
-                core.info(`sub: ${payload.sub}`)
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
