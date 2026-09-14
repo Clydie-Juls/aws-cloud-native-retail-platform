@@ -1,0 +1,34 @@
+# Terraform working directory
+.terraform/
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Terraform plans
+*.tfplan
+tfplan
+*.plan
+
+# Local plan output/debug files
+plan.txt
+check-plan.txt
+final-plan.txt
+
+# Variable files may contain secrets
+*.tfvars
+*.tfvars.json
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# OS/editor
+.DS_Store

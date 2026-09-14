@@ -29,3 +29,15 @@ variable "subnet_newbits" {
   type        = number
   default     = 8
 }
+
+variable "db_password" {
+  description = "Password used by the demo databases and RabbitMQ"
+  type        = string
+  sensitive   = true
+}
+
+variable "service_ingress_port" {
+  description = "Port that each service is exposed too"
+  type        = number
+  default     = 8080
+}
